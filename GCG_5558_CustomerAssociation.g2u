@@ -1,0 +1,736 @@
+Program.Sub.ScreenSU.Start
+Gui.FormCustomerAssociation..Create
+Gui.FormCustomerAssociation..Caption("Customer Order Portal Maintenace")
+Gui.FormCustomerAssociation..Size(11280,7290)
+Gui.FormCustomerAssociation..MinX(0)
+Gui.FormCustomerAssociation..MinY(0)
+Gui.FormCustomerAssociation..Position(0,0)
+Gui.FormCustomerAssociation..BackColor(-2147483633)
+Gui.FormCustomerAssociation..MousePointer(0)
+Gui.FormCustomerAssociation..Event(UnLoad,FormCustomerAssociation_UnLoad)
+Gui.FormCustomerAssociation.lblCustomer.Create(Label,"Customer :",True,990,255,0,30,90,True,0,"Arial",8,-2147483633,0)
+Gui.FormCustomerAssociation.txtCustomerCode.Create(TextBox,"",True,1215,300,0,60,270,True,0,"Arial",8,-2147483643,1)
+Gui.FormCustomerAssociation.txtCustomerCode.MaxLength(6)
+Gui.FormCustomerAssociation.txtCustomerCode.Event(LostFocus,txtCustomerCode_LostFocus)
+Gui.FormCustomerAssociation.txtCustomerCode.TabStop(True)
+Gui.FormCustomerAssociation.txtCustomerCode.TabIndex(1)
+Gui.FormCustomerAssociation.txtCustomerName.Create(TextBox,"",True,4890,300,0,1305,270,False,0,"Arial",8,-2147483643,1)
+Gui.FormCustomerAssociation.cmdCustomerBrowser.Create(Button)
+Gui.FormCustomerAssociation.cmdCustomerBrowser.Size(375,375)
+Gui.FormCustomerAssociation.cmdCustomerBrowser.Position(6225,240)
+Gui.FormCustomerAssociation.cmdCustomerBrowser.Caption("^")
+Gui.FormCustomerAssociation.cmdCustomerBrowser.Event(Click,cmdCustomerBrowser_Click)
+Gui.FormCustomerAssociation.cmdCustomerBrowser.TabStop(True)
+Gui.FormCustomerAssociation.cmdCustomerBrowser.TabIndex(2)
+Gui.FormCustomerAssociation.lblUser.Create(Label,"GS User :",True,810,255,0,30,675,True,0,"Arial",8,-2147483633,0)
+Gui.FormCustomerAssociation.txtUser.Create(TextBox,"",True,1215,300,0,60,855,True,0,"Arial",8,-2147483643,1)
+Gui.FormCustomerAssociation.txtUser.Event(LostFocus,txtUser_LostFocus)
+Gui.FormCustomerAssociation.txtUser.MaxLength(8)
+Gui.FormCustomerAssociation.txtUser.TabStop(True)
+Gui.FormCustomerAssociation.txtUser.TabIndex(3)
+Gui.FormCustomerAssociation.txtUserName.Create(TextBox,"",True,4890,300,0,1305,855,False,0,"Arial",8,-2147483643,1)
+Gui.FormCustomerAssociation.cmdAddAssociation.Create(Button)
+Gui.FormCustomerAssociation.cmdAddAssociation.Size(855,375)
+Gui.FormCustomerAssociation.cmdAddAssociation.Position(10155,825)
+Gui.FormCustomerAssociation.cmdAddAssociation.Caption("Add")
+Gui.FormCustomerAssociation.cmdAddAssociation.Event(Click,cmdAddAssociation_Click)
+Gui.FormCustomerAssociation.cmdAddAssociation.Enabled(False)
+Gui.FormCustomerAssociation.cmdAddAssociation.TabStop(True)
+Gui.FormCustomerAssociation.cmdAddAssociation.TabIndex(6)
+Gui.FormCustomerAssociation.cmdUserBrowser.Create(Button)
+Gui.FormCustomerAssociation.cmdUserBrowser.Size(375,375)
+Gui.FormCustomerAssociation.cmdUserBrowser.Position(6225,825)
+Gui.FormCustomerAssociation.cmdUserBrowser.Caption("^")
+Gui.FormCustomerAssociation.cmdUserBrowser.Event(Click,cmdUserBrowser_Click)
+Gui.FormCustomerAssociation.cmdUserBrowser.TabStop(True)
+Gui.FormCustomerAssociation.cmdUserBrowser.TabIndex(4)
+Gui.FormCustomerAssociation.gsgcAssociation.Create(GsGridControl)
+Gui.FormCustomerAssociation.gsgcAssociation.Size(11175,5790)
+Gui.FormCustomerAssociation.gsgcAssociation.Position(0,1260)
+Gui.FormCustomerAssociation.gsgcAssociation.Anchor(15)
+Gui.FormCustomerAssociation.gsgcAssociation.Event(RowCellClick,gsgcAssociation_RowCellClick)
+Gui.FormCustomerAssociation.gsgcAssociation.TabStop(True)
+Gui.FormCustomerAssociation.gsgcAssociation.TabIndex(7)
+Gui.FormCustomerAssociation.txtPassword.Create(TextBox,"",True,3210,300,0,6705,855,True,0,"Arial",8,-2147483643,1)
+Gui.FormCustomerAssociation.txtPassword.PasswordChar("*")
+Gui.FormCustomerAssociation.txtPassword.MaxLength(12)
+Gui.FormCustomerAssociation.txtPassword.Event(LostFocus,txtPassword_LostFocus)
+Gui.FormCustomerAssociation.txtPassword.TabStop(True)
+Gui.FormCustomerAssociation.txtPassword.TabIndex(5)
+Gui.FormCustomerAssociation.lblPassword.Create(Label,"GS Password",True,1935,255,0,6735,675,True,0,"Arial",8,-2147483633,0)
+Gui.FormCustomerAssociation.cmdLaunchDirectory.Create(Button)
+Gui.FormCustomerAssociation.cmdLaunchDirectory.Size(2220,375)
+Gui.FormCustomerAssociation.cmdLaunchDirectory.Position(8790,45)
+Gui.FormCustomerAssociation.cmdLaunchDirectory.Caption("Open Launch File Directory")
+Gui.FormCustomerAssociation.cmdLaunchDirectory.Event(Click,cmdLaunchDirectory_Click)
+Gui.FormCustomerAssociation.cmdLaunchDirectory.TabStop(True)
+Gui.FormCustomerAssociation.cmdLaunchDirectory.TabIndex(8)
+Gui.FormCustomerAssociation.cmdLaunchDirectory.Anchor(9)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+V.Global.iConnections.Declare(Long, 0)
+V.Global.bError.Declare(Boolean, False)
+V.Global.iCommonConnections.Declare(Long, 0)
+V.Global.iAddEnabled.Declare(Long, 0)
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+'GCG_5558_CustomerAssociation.g2u
+'Trey S
+'June 18th, 2019
+'For Acero Precision
+'Ticket FIT010-41820191011-7
+'Quote 11195
+'This is a maintenance program to associate a customer with a GS User,
+'and then generate a batch file that will launch GCG_5558_ShippingDashboard.g2u for that customer
+'without launching the GS Menu
+
+F.Intrinsic.Control.Try
+
+F.Intrinsic.Control.CallSub(Refresh)
+
+GUI.FormCustomerAssociation..Show
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.Main.End
+
+Program.Sub.FormCustomerAssociation_UnLoad.Start
+F.Intrinsic.Control.Try
+
+F.Intrinsic.Control.If(V.DataTable.dtCustomerAssociation.Exists)
+	F.Data.DataTable.Close("dtCustomerAssociation")
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.End
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.FormCustomerAssociation_UnLoad.End
+
+Program.Sub.txtCustomerCode_LostFocus.Start
+'check if a valid customer, load it
+
+F.Intrinsic.Control.Try
+
+V.Local.sCustomer.Declare(String)
+V.Local.sRet.Declare(String)
+V.Local.sSQL.Declare(String)
+
+V.Local.sCustomer.Set(V.Screen.FormCustomerAssociation!txtCustomerCode.Text.Trim)
+F.Intrinsic.Control.If(V.Local.sCustomer.Trim, =, "")
+	GUI.FormCustomerAssociation.txtCustomerCode.Text("")
+	GUI.FormCustomerAssociation.txtCustomerName.Text("")
+	F.Intrinsic.Control.CallSub(CheckAddEnabled)
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.CallSub(OpenConnection)
+
+F.Intrinsic.String.Build("select RTRIM(CUSTOMER) as CUSTOMER, RTRIM(NAME_CUSTOMER) as NAME_CUSTOMER from V_CUSTOMER_MASTER where UPPER(CUSTOMER) = '{0}'", V.Local.sCustomer.UCase, V.Local.sSQL)
+F.ODBC.Connection!Con.ExecuteAndReturn(V.Local.sSQL, V.Local.sRet)
+F.Intrinsic.Control.If(V.Ambient.ExecuteAndReturnEOF)
+	F.Intrinsic.UI.Msgbox("Invalid Customer entered.")
+	GUI.FormCustomerAssociation.txtCustomerCode.Text("")
+	GUI.FormCustomerAssociation.txtCustomerName.Text("")
+	F.Intrinsic.Control.CallSub(CheckAddEnabled)
+F.Intrinsic.Control.Else
+	F.Intrinsic.String.Split(V.Local.sRet, "*!*", V.Local.sRet)
+	GUI.FormCustomerAssociation.txtCustomerCode.Text(V.Local.sRet(0).Trim)
+	GUI.FormCustomerAssociation.txtCustomerName.Text(V.Local.sRet(1).Trim)
+	F.Intrinsic.Control.CallSub(CheckAddEnabled)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.CallSub(CloseConnection)
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.txtCustomerCode_LostFocus.End
+
+Program.Sub.cmdCustomerBrowser_Click.Start
+'customer browser, load selected
+
+F.Intrinsic.Control.Try
+
+V.Local.sCustomer.Declare(String)
+V.Local.sRet.Declare(String)
+
+F.Intrinsic.UI.Browser(205, "", V.Local.sRet)
+F.Intrinsic.Control.If(V.Local.sRet.IsNotCancel)
+	F.Intrinsic.String.Split(V.Local.sRet, "*!*", V.Local.sRet)
+	GUI.FormCustomerAssociation.txtCustomerCode.Text(V.Local.sRet(0).Trim)
+	GUI.FormCustomerAssociation.txtCustomerName.Text(V.Local.sRet(1).Trim)
+	F.Intrinsic.Control.CallSub(CheckAddEnabled)
+F.Intrinsic.Control.Else
+	GUI.FormCustomerAssociation.txtCustomerCode.Text("")
+	GUI.FormCustomerAssociation.txtCustomerName.Text("")
+	F.Intrinsic.Control.CallSub(CheckAddEnabled)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdCustomerBrowser_Click.End
+
+Program.Sub.CheckAddEnabled.Start
+'check if the add button should be enabled or not
+
+F.Intrinsic.Control.Try
+
+V.Local.sUser.Declare(String)
+V.Local.sPassword.Declare(String)
+V.Local.sCustomer.Declare(String)
+
+V.Local.sUser.Set(V.Screen.FormCustomerAssociation!txtUser.Text.Trim)
+V.Local.sPassword.Set(V.Screen.FormCustomerAssociation!txtPassword.Text.Trim)
+V.Local.sCustomer.Set(V.Screen.FormCustomerAssociation!txtCustomerCode.Text.Trim)
+
+
+F.Intrinsic.Control.If(V.Local.sUser, =, "", OR, V.Local.sPassword, =, "", V.Local.sCustomer, =, "")
+	GUI.FormCustomerAssociation.cmdAddAssociation.Enabled(False)
+F.Intrinsic.Control.Else
+	GUI.FormCustomerAssociation.cmdAddAssociation.Enabled(True)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.CheckAddEnabled.End
+
+Program.Sub.txtUser_LostFocus.Start
+'check if a valid user, load it
+
+F.Intrinsic.Control.Try
+
+V.Local.sUser.Declare(String)
+V.Local.sSQL.Declare(String)
+V.Local.sRet.Declare(String)
+
+V.Local.sUser.Set(V.Screen.FormCustomerAssociation!txtUser.Text.Trim)
+F.Intrinsic.Control.If(V.Local.sUser.Trim, =, "")
+	GUI.FormCustomerAssociation.txtUser.Text("")
+	GUI.FormCustomerAssociation.txtUserName.Text("")
+	F.Intrinsic.Control.CallSub(CheckAddEnabled)
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.CallSub(OpenCommonConnection)
+
+F.Intrinsic.String.Build("select RTRIM(GS_USER) as GS_USER, RTRIM(FIRST_NAME) as NAME from USER_INFORMATION where (RTRIM(COMPANY) = '' or COMPANY = '{0}') and UPPER(GS_USER) = '{1}'", V.Caller.CompanyCode, V.Local.sUser.UCase, V.Local.sSQL)
+F.ODBC.Connection!Comm.ExecuteAndReturn(V.Local.sSQL, V.Local.sRet)
+F.Intrinsic.Control.If(V.Ambient.ExecuteAndReturnEOF)
+	F.Intrinsic.UI.Msgbox("Invalid User Entered.")
+	GUI.FormCustomerAssociation.txtUser.Text("")
+	GUI.FormCustomerAssociation.txtUserName.Text("")
+	F.Intrinsic.Control.CallSub(CheckAddEnabled)
+F.Intrinsic.Control.Else
+	F.Intrinsic.String.Split(V.Local.sRet, "*!*", V.Local.sRet)
+	GUI.FormCustomerAssociation.txtUser.Text(V.Local.sRet(0).Trim)
+	GUI.FormCustomerAssociation.txtUserName.Text(V.Local.sRet(1).Trim)
+	F.Intrinsic.Control.CallSub(CheckAddEnabled)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.CallSub(CloseCommonConnection)
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.txtUser_LostFocus.End
+
+Program.Sub.cmdAddAssociation_Click.Start
+'should only be enabled if both items selected already
+
+F.Intrinsic.Control.Try
+
+V.Local.sFilter.Declare(String)
+V.Local.sSQL.Declare(String)
+V.Local.sGSUser.Declare(String)
+V.Local.sCustomer.Declare(String)
+V.Local.sPassword.Declare(String)
+V.Local.sKey.Declare(String)
+V.Local.bValid.Declare(Boolean)
+
+V.Local.sGSUser.Set(V.Screen.FormCustomerAssociation!txtUser.Text.Trim)
+V.Local.sCustomer.Set(V.Screen.FormCustomerAssociation!txtCustomerCode.Text.Trim)
+V.Local.sPassword.Set(V.Screen.FormCustomerAssociation!txtPassword.Text.Trim)
+
+F.Intrinsic.String.Build("[GSS_USER] = '{0}'", V.Local.sGSUser, V.Local.sFilter)
+F.Data.DataView.Create("dtCustomerAssociation", "dvAdd", 22, V.Local.sFilter, "")
+F.Intrinsic.Control.If(V.DataView.dtCustomerAssociation!dvAdd.RowCount, >, 0)
+	F.Intrinsic.UI.Msgbox("An association for this user already exists.")
+	F.Data.DataView.Close("dtCustomerAssociation", "dvAdd")
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+F.Data.DataView.Close("dtCustomerAssociation", "dvAdd")
+
+F.Intrinsic.Control.Try
+F.Global.Security.ValidateUser(V.Caller.CompanyCode, V.Local.sGSUser, V.Local.sPassword, V.Local.bValid)
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber, =, 25100)
+		'try again, this is a weird random error
+		F.Intrinsic.UI.Sleep(5)
+		F.Global.Security.ValidateUser(V.Caller.CompanyCode, V.Local.sGSUser, V.Local.sPassword, V.Local.bValid)
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndTry
+
+F.Intrinsic.Control.If(V.Local.bValid.Not)
+	F.Intrinsic.UI.Msgbox("Incorrect Username/Password combination.")
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.String.WeakEncryption(V.Local.sPassword, V.Local.sPassword)
+F.Data.DataTable.AddRow("dtCustomerAssociation", "GSS_USER", V.Local.sGSUser, "CUSTOMER", V.Local.sCustomer)
+
+F.Intrinsic.String.Build("{0}-{1}", V.Local.sCustomer.Trim, V.Local.sGSUser.Trim, V.Local.sKey)
+F.Data.Dictionary.AddItem("dictPassword", V.Local.sKey, V.Local.sPassword)
+
+GUI.FormCustomerAssociation.txtCustomerCode.Text("")
+GUI.FormCustomerAssociation.txtCustomerName.Text("")
+GUI.FormCustomerAssociation.txtUser.Text("")
+GUI.FormCustomerAssociation.txtUserName.Text("")
+GUI.FormCustomerAssociation.txtPassword.Text("")
+GUI.FormCustomerAssociation.cmdAddAssociation.Enabled(False)
+
+F.Intrinsic.Control.CallSub(Save)
+F.Intrinsic.Control.CallSub(Refresh)
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdAddAssociation_Click.End
+
+Program.Sub.cmdUserBrowser_Click.Start
+'User browser, load selected
+
+F.Intrinsic.Control.Try
+
+V.Local.sCustomer.Declare(String)
+V.Local.sRet.Declare(String)
+
+F.Intrinsic.UI.Browser(10, "", V.Local.sRet)
+F.Intrinsic.Control.If(V.Local.sRet.IsNotCancel)
+	F.Intrinsic.String.Split(V.Local.sRet, "*!*", V.Local.sRet)
+	GUI.FormCustomerAssociation.txtUser.Text(V.Local.sRet(1).Trim)
+	GUI.FormCustomerAssociation.txtUserName.Text(V.Local.sRet(3).Trim)
+	F.Intrinsic.Control.CallSub(CheckAddEnabled)
+F.Intrinsic.Control.Else
+	GUI.FormCustomerAssociation.txtUser.Text("")
+	GUI.FormCustomerAssociation.txtUserName.Text("")
+	F.Intrinsic.Control.CallSub(CheckAddEnabled)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdUserBrowser_Click.End
+
+Program.Sub.Refresh.Start
+'load in the data
+
+F.Intrinsic.Control.Try
+
+GUI.FormCustomerAssociation.gsgcAssociation.SuspendLayout
+GUI.FormCustomerAssociation.gsgcAssociation.Visible(False)
+
+F.Intrinsic.Control.CallSub(LoadAssociations)
+F.Intrinsic.Control.CallSub(LoadGrid)
+
+GUI.FormCustomerAssociation.gsgcAssociation.ResumeLayout
+GUI.FormCustomerAssociation.gsgcAssociation.Visible(True)
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.Refresh.End
+
+Program.Sub.LoadAssociations.Start
+'load the saved customer/user associations
+
+F.Intrinsic.Control.Try
+
+V.Local.sSQL.Declare(String)
+
+F.Intrinsic.Control.CallSub(OpenConnection)
+
+F.Intrinsic.Control.If(V.DataTable.dtCustomerAssociation.Exists)
+	F.Data.DataTable.Close("dtCustomerAssociation")
+	F.Data.Dictionary.Close("dictPassword")
+F.Intrinsic.Control.EndIf
+
+V.Local.sSQL.Set("select RTRIM(CUSTOMER) as CUSTOMER, RTRIM(GSS_USER) as GSS_USER from GCG_5558_CUST_ASSOC")
+F.Data.DataTable.CreateFromSQL("dtCustomerAssociation", "Con", V.Local.sSQL, True)
+
+V.Local.sSQL.Set("select RTRIM(CUSTOMER) + '-' +  RTRIM(GSS_USER) as CUSTOMER_USER, RTRIM(GSS_PASSWORD) as GSS_PASSWORD from GCG_5558_CUST_ASSOC")
+F.Data.Dictionary.CreateFromSQL("dictPassword", "Con", V.Local.sSQL)
+F.Data.Dictionary.SetDefaultReturn("dictPassword", "")
+
+F.Data.DataTable.AddColumn("dtCustomerAssociation", "CUSTOMER_NAME", "String")
+V.Local.sSQL.Set("select RTRIM(CUSTOMER) as CUSTOMER, RTRIM(NAME_CUSTOMER) as NAME_CUSTOMER from V_CUSTOMER_MASTER")
+F.Data.Dictionary.CreateFromSQL("dictCustomers", "Con", V.Local.sSQL)
+F.Data.Dictionary.SetDefaultReturn("dictCustomers", "")
+F.Data.DataTable.FillFromDictionary("dtCustomerAssociation", "dictCustomers", "CUSTOMER", "CUSTOMER_NAME")
+F.Data.Dictionary.Close("dictCustomers")
+
+F.Intrinsic.Control.CallSub(CloseConnection)
+
+F.Intrinsic.Control.CallSub(OpenCommonConnection)
+
+F.Data.DataTable.AddColumn("dtCustomerAssociation", "USER_NAME", "String")
+F.Intrinsic.String.Build("select RTRIM(GS_USER) as GS_USER, RTRIM(FIRST_NAME) as NAME from USER_INFORMATION where (RTRIM(COMPANY) = '' or COMPANY = '{0}')", V.Caller.CompanyCode, V.Local.sSQL)
+F.Data.Dictionary.CreateFromSQL("dictUsers", "Comm", V.Local.sSQL)
+F.Data.Dictionary.SetDefaultReturn("dictUsers", "")
+F.Data.DataTable.FillFromDictionary("dtCustomerAssociation", "dictUsers", "GSS_USER", "USER_NAME")
+F.Data.Dictionary.Close("dictUsers")
+
+F.Intrinsic.Control.CallSub(CloseCommonConnection)
+
+F.Data.DataTable.AddColumn("dtCustomerAssociation", "Generate", "String")
+F.Data.DataTable.AddColumn("dtCustomerAssociation", "Delete", "String")
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.LoadAssociations.End
+
+Program.Sub.LoadGrid.Start
+'set grid properties
+
+F.Intrinsic.Control.Try
+
+GUI.FormCustomerAssociation.gsgcAssociation.AddGridviewFromDatatable("gvCustomerAssociation", "dtCustomerAssociation")
+
+GUI.gsgcAssociation.gsgcRMAs.SetGridviewProperty("gvCustomerAssociation", "ReadOnly", True)
+GUI.gsgcAssociation.gsgcRMAs.SetGridviewProperty("gvCustomerAssociation", "EnableAppearanceOddRow", True)
+GUI.gsgcAssociation.gsgcRMAs.SetGridviewProperty("gvCustomerAssociation", "OptionsViewColumnAutoWidth", False)
+
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "GSS_USER", "HeaderFontBold", True)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "USER_NAME", "HeaderFontBold", True)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "CUSTOMER", "HeaderFontBold", True)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "CUSTOMER_NAME", "HeaderFontBold", True)
+
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "GSS_USER", "Caption", "GS User")
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "USER_NAME", "Caption", "Username")
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "CUSTOMER", "Caption", "Customer")
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "CUSTOMER_NAME", "Caption", "Customer Name")
+
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "GSS_USER", "AllowEdit", False)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "USER_NAME", "AllowEdit", False)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "CUSTOMER", "AllowEdit", False)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "CUSTOMER_NAME", "AllowEdit", False)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "Delete", "AllowEdit", False)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "Generate", "AllowEdit", False)
+
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "GSS_USER", "MinWidth", 40)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "USER_NAME", "MinWidth", 200)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "CUSTOMER", "MinWidth", 40)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "CUSTOMER_NAME", "MinWidth", 200)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "Delete", "MinWidth", 50)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "Generate", "MinWidth", 50)
+
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "GSS_USER", "VisibleIndex", 2)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "USER_NAME", "VisibleIndex", 3)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "CUSTOMER", "VisibleIndex", 0)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "CUSTOMER_NAME", "VisibleIndex", 1)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "Delete", "VisibleIndex", 5)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "Generate", "VisibleIndex", 4)
+
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "Delete", "ShowCaption", False)
+GUI.FormCustomerAssociation.gsgcAssociation.SetColumnProperty("gvCustomerAssociation", "Generate", "ShowCaption", False)
+
+GUI.FormCustomerAssociation.gsgcAssociation.ColumnEdit("gvCustomerAssociation", "Delete", "EditorButton", "Delete")
+GUI.FormCustomerAssociation.gsgcAssociation.ColumnEdit("gvCustomerAssociation", "Generate", "EditorButton", "Generate")
+
+GUI.FormCustomerAssociation.gsgcAssociation.MainView("gvCustomerAssociation")
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.LoadGrid.End
+
+Program.Sub.OpenConnection.Start
+'check if a connection to the database is already open
+'if not, open one
+'increment connection counter
+
+F.Intrinsic.Control.Try
+
+F.Intrinsic.Control.If(V.Global.iConnections, =, 0)
+	F.ODBC.Connection!Con.OpenCompanyConnection
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Math.Add(V.Global.iConnections, 1, V.Global.iConnections)
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.OpenConnection.End
+
+Program.Sub.CloseConnection.Start
+'if no connections are currently being used, close connection
+
+F.Intrinsic.Control.Try
+
+F.Intrinsic.Control.If(V.Global.iConnections, >, 0)
+	F.Intrinsic.Math.Sub(V.Global.iConnections, 1, V.Global.iConnections)
+	
+	F.Intrinsic.Control.If(V.Global.iConnections, =, 0)
+		F.ODBC.Connection!Con.Close
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.CloseConnection.End
+
+Program.Sub.OpenCommonConnection.Start
+'check if a connection to the database is already open
+'if not, open one
+'increment connection counter
+
+F.Intrinsic.Control.Try
+
+F.Intrinsic.Control.If(V.Global.iCommonConnections, =, 0)
+	F.ODBC.Connection!Comm.OpenCommonConnection
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Math.Add(V.Global.iCommonConnections, 1, V.Global.iCommonConnections)
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.OpenCommonConnection.End
+
+Program.Sub.CloseCommonConnection.Start
+'if no connections are currently being used, close connection
+
+F.Intrinsic.Control.Try
+
+F.Intrinsic.Control.If(V.Global.iCommonConnections, >, 0)
+	F.Intrinsic.Math.Sub(V.Global.iCommonConnections, 1, V.Global.iCommonConnections)
+	
+	F.Intrinsic.Control.If(V.Global.iCommonConnections, =, 0)
+		F.ODBC.Connection!Comm.Close
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.CloseCommonConnection.End
+
+Program.Sub.ErrorMessage.Start
+'basic error message for replacing catch block
+'this is really just for when printing the message and ending program
+'pass error number, error description, current subroutine
+'optional callback sub, this will be called before ending
+F.Intrinsic.Control.Try
+
+V.Local.iError.Declare(Long)
+V.Local.sErrorDescription.Declare(String)
+V.Local.sSubroutine.Declare(String)
+V.Local.sError.Declare(String)
+V.Local.bExists.Declare(Boolean)
+V.Local.sCallback.Declare(String)
+
+V.Local.iError.Set(V.Args.ErrorNumber)
+V.Local.sErrorDescription.Set(V.Args.ErrorDescription)
+V.Local.sSubroutine.Set(V.Args.Subroutine)
+
+'make sure we aren't in an error loop
+F.Intrinsic.Control.If(V.Global.bError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+V.Global.bError.Set(True)
+
+F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}", V.Caller.ScriptFile, V.Ambient.Newline, V.Local.sSubroutine, V.Local.iError, V.Local.sErrorDescription, V.Ambient.GABVersion, V.Local.sError)
+F.Intrinsic.UI.Msgbox(V.Local.sError)
+
+F.Intrinsic.Variable.ArgExists("Callback", V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists)
+	V.Local.sCallback.Set(V.Args.Callback.Trim)
+	F.Intrinsic.Control.CallSub(V.Local.sCallback)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.End
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Caller.ScriptFile,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndTry
+Program.Sub.ErrorMessage.End
+
+Program.Sub.gsgcAssociation_RowCellClick.Start
+F.Intrinsic.Control.Try
+
+V.Local.sSQL.Declare(String)
+
+F.Intrinsic.Control.SelectCase(V.Args.COLUMN.UCase)
+	F.Intrinsic.Control.Case("DELETE")
+		
+		F.Intrinsic.String.Build("delete from GCG_5558_CUST_ASSOC where GSS_USER = '{0}' and CUSTOMER = '{1}'", V.DataTable.dtCustomerAssociation(V.Args.RowIndex).GSS_USER!FieldValTrim, V.DataTable.dtCustomerAssociation(V.Args.RowIndex).CUSTOMER!FieldValTrim, V.Local.sSQL)
+		
+		F.Intrinsic.Control.CallSub(OpenConnection)
+		F.ODBC.Connection!Con.Execute(V.Local.sSQL)
+		F.Intrinsic.Control.CallSub(CloseConnection)
+		
+		F.Data.DataTable.DeleteRow("dtCustomerAssociation", V.Args.RowIndex)
+		F.Data.DataTable.AcceptChanges("dtCustomerAssociation")
+		
+	F.Intrinsic.Control.Case("GENERATE")
+		GUI.FormCustomerAssociation..Enabled(False)
+		F.Intrinsic.Control.CallSub(GenerateBatchFile, "CUSTOMER", V.DataTable.dtCustomerAssociation(V.Args.RowIndex).CUSTOMER!FieldValTrim, "USER", V.DataTable.dtCustomerAssociation(V.Args.RowIndex).GSS_USER!FieldValTrim)
+		GUI.FormCustomerAssociation..Enabled(True)
+F.Intrinsic.Control.EndSelect
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.gsgcAssociation_RowCellClick.End
+
+Program.Sub.GenerateBatchFile.Start
+'generate a directive file and accompanying batch file to log this user into the dashboard
+
+F.Intrinsic.Control.Try
+
+V.Local.sSQL.Declare(String)
+V.Local.sUser.Declare(String)
+V.Local.sCustomer.Declare(String)
+V.Local.sPassword.Declare(String)
+V.Local.sKey.Declare(String)
+V.Local.sDirectiveFile.Declare(String)
+V.Local.sDirectiveFilePath.Declare(String)
+V.Local.sBatchFile.Declare(String)
+V.Local.sBatchFileName.Declare(String)
+V.Local.sBatchFilePath.Declare(String)
+V.Local.bExists.Declare(Boolean)
+V.Local.sMessage.Declare(String)
+V.Local.iRet.Declare(Long)
+
+V.Local.sUser.Set(V.Args.USER.Trim)
+V.Local.sCustomer.Set(V.Args.CUSTOMER.Trim)
+
+'get the password
+F.Intrinsic.String.Build("{0}-{1}", V.Local.sCustomer.Trim, V.Local.sUser.Trim, V.Local.sKey)
+V.Local.sPassword.Set(V.Dictionary.dictPassword![V.Local.sKey])
+F.Intrinsic.String.WeakDecryption(V.Local.sPassword, V.Local.sPassword)
+
+'create directive file
+F.Intrinsic.String.Build("SELECTEDCOMPANYCODE::{0}{1}USER::{2}{1}PASSWORD::{3}{1}GABSCRIPT::GCG_5558_ShippingDashboard.g2u", V.Caller.CompanyCode, V.Ambient.NewLine, V.Local.sUser, V.Local.sPassword, V.Local.sDirectiveFile)
+
+F.Intrinsic.String.Build("{0}\Custom\5558\Directive Files", V.Caller.GlobalDir, V.Local.sDirectiveFilePath)
+F.Intrinsic.Control.CallSub(CheckDirectory, "PATH", V.Local.sDirectiveFilePath)
+
+F.Intrinsic.String.Build("{0}\{1}_{2}_{3}_Login.dir", V.Local.sDirectiveFilePath, V.Caller.CompanyCode, V.Local.sCustomer, V.Local.sUser, V.Local.sDirectiveFilePath)
+
+F.Intrinsic.File.Exists(V.Local.sDirectiveFilePath, V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists)
+	F.Intrinsic.File.DeleteFile(V.Local.sDirectiveFilePath)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.File.String2File(V.Local.sDirectiveFilePath, V.Local.sDirectiveFile)
+
+'now create batch file
+F.Intrinsic.String.Build("echo off{0}SET GSSDF={1}{0}{2}\login\GSSMenu.exe", V.Ambient.NewLine, V.Local.sDirectiveFilePath, V.Caller.PluginsDir, V.Local.sBatchFile)
+
+F.Intrinsic.String.Build("{0}\Custom\5558\Launch Files", V.Caller.GlobalDir, V.Local.sBatchFilePath)
+F.Intrinsic.Control.CallSub(CheckDirectory, "PATH", V.Local.sBatchFilePath)
+
+F.Intrinsic.String.Build("{0}\{1}_{2}_GSS_Login.bat", V.Local.sBatchFilePath, V.Local.sCustomer, V.Local.sUser, V.Local.sBatchFileName)
+
+F.Intrinsic.File.Exists(V.Local.sBatchFileName, V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists)
+	F.Intrinsic.File.DeleteFile(V.Local.sBatchFileName)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.File.String2File(V.Local.sBatchFileName, V.Local.sBatchFile)
+
+'give option to open the folder
+F.Intrinsic.String.Build("Launch file successfully created:{0}{1}{0}Open directory?", V.Ambient.NewLine, V.Local.sBatchFileName, V.Local.sMessage)
+F.Intrinsic.UI.Msgbox(V.Local.sMessage, "Success", 4, V.Local.iRet)
+F.Intrinsic.Control.If(V.Local.iRet, =, 6)
+	F.Intrinsic.Task.ShellExec(0, "", V.Local.sBatchFilePath, "", "", 0)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.GenerateBatchFile.End
+
+Program.Sub.Save.Start
+'save the associations to the database
+
+F.Intrinsic.Control.Try
+
+F.Intrinsic.Control.CallSub(OpenConnection)
+
+'load the passwords
+F.Data.DataTable.AddColumn("dtCustomerAssociation", "GSS_PASSWORD", "String")
+F.Data.DataTable.AddExpressionColumn("dtCustomerAssociation", "CUSTOMER_USER",  "String", "TRIM([CUSTOMER]) + '-' + TRIM([GSS_USER])")
+F.Data.DataTable.FillFromDictionary("dtCustomerAssociation", "dictPassword", "CUSTOMER_USER", "GSS_PASSWORD")
+
+F.ODBC.Connection!Con.Execute("delete from GCG_5558_CUST_ASSOC")
+F.Data.DataTable.SaveToDB("dtCustomerAssociation", "Con", "GCG_5558_CUST_ASSOC", "GSS_USER*!*CUSTOMER", 256, "GSS_USER@!@GSS_USER*!*CUSTOMER@!@CUSTOMER*!*GSS_PASSWORD@!@GSS_PASSWORD")
+F.Data.DataTable.AcceptChanges("dtCustomerAssociation")
+
+F.Data.DataTable.RemoveColumn("dtCustomerAssociation", "GSS_PASSWORD")
+F.Data.DataTable.RemoveColumn("dtCustomerAssociation", "CUSTOMER_USER")
+
+F.Intrinsic.Control.CallSub(CloseConnection)
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.Save.End
+
+Program.Sub.txtPassword_LostFocus.Start
+F.Intrinsic.Control.Try
+
+F.Intrinsic.Control.CallSub(CheckAddEnabled)
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.txtPassword_LostFocus.End
+
+Program.Sub.CheckDirectory.Start
+'check if the given import directories exist
+'create them if they don't
+'pass PATH to check
+
+F.Intrinsic.Control.Try
+
+V.Local.sPath.Declare(String)
+V.Local.bExists.Declare(Boolean)
+
+V.Local.sPath.Set(V.Args.Path)
+F.Intrinsic.File.DirExists(V.Local.sPath, V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists.Not)
+	F.Intrinsic.File.CreateDir(V.Local.sPath)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.CheckDirectory.End
+
+Program.Sub.cmdLaunchDirectory_Click.Start
+'open the launch file directory
+
+F.Intrinsic.Control.Try
+
+V.Local.sPath.Declare(String)
+
+F.Intrinsic.String.Build("{0}\Custom\5558\Launch Files", V.Caller.GlobalDir, V.Local.sPath)
+
+F.Intrinsic.Task.ShellExec(0, "", V.Local.sPath, "", "", 0)
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(ErrorMessage, "ErrorNumber", V.Ambient.ErrorNumber, "ErrorDescription", V.Ambient.ErrorDescription, "Subroutine", V.Ambient.CurrentSubroutine, "Callback", "FormCustomerAssociation_UnLoad")
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdLaunchDirectory_Click.End
